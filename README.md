@@ -192,6 +192,33 @@ ReportGenerator "-reports:./*/*/*/coverage.cobertura.xml" "-targetdir:Cobertura"
 13. El comando anterior primero proceda instalar una herramienta llamada ReportGenerator (https://reportgenerator.io/) la cual mediante la segunda parte del comando permitira generar un reporte en formato HTML con la cobertura obtenida de la ejecución de las pruebas. Este reporte debe localizarse dentro de una carpeta llamada Cobertura y puede acceder a el abriendo con un navegador de internet el archivo index.htm.
 
 ---
+# Bank Domain
+
+A simple bank domain model implementing basic banking operations for educational purposes.
+
+## Features
+
+- Create bank accounts with an initial balance
+- Debit and credit operations with validation
+- Full unit test coverage
+
+## Getting Started
+
+```csharp
+var account = new BankAccount("John Doe", 1000);
+account.Debit(500); // Balance becomes 500
+account.Credit(200); // Balance becomes 700
+```
+
+## Documentation
+
+For full API documentation, visit our [documentation site](https://aakhtar004.github.io/lab-2025-i-si784-u2-05-cs-Aakhtar004/docs/).
+
+## Test Coverage
+
+This project has 100% code coverage as verified by automated tests.
+
+---
 ## Actividades Encargadas
 1. Adicionar los escenarios, casos de prueba, metodos de prueba para las mutaciones no coberturadas (7) e ignoradas (2) para completar la cobertura del 100% del código.
 2. Completar la documentación del Clases, atributos y métodos para luego generar una automatización (publish_docs.yml) que genere la documentación utilizando DocFx y la publique en una Github Page

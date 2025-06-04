@@ -1,0 +1,36 @@
+name: Publish Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Bank/**/*.cs'
+      - 'Bank/docfx.json'
+      - '.github/workflows/publish_docs.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+    
+    - name: Install DocFX
+      run: dotnet tool install -g docfx
+    
+    - name: Build Documentation
+      run: |
+        cd Bank
+        docfx docfx.json
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./Bank/_site
+        destination_dir: docs

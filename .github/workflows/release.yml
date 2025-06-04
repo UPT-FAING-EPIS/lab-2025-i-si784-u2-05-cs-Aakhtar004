@@ -1,0 +1,70 @@
+name: Create Release and Publish Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+        source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Restore dependencies
+      run: dotnet restore Bank/Bank.sln
+    
+    - name: Build
+      run: dotnet build Bank/Bank.sln --configuration Release --no-restore
+    
+    - name: Test
+      run: dotnet test Bank/Bank.sln --configuration Release --no-build
+    
+    - name: Extract tag version
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Update package version
+      run: |
+        sed -i "s/<version>1.0.0<\/version>/<version>Aakhtar004-${{ steps.get_version.outputs.VERSION }}<\/version>/" Bank/Bank.Domain/Bank.Domain.nuspec
+    
+    - name: Pack
+      run: |
+        cd Bank/Bank.Domain
+        nuget pack Bank.Domain.nuspec -Properties Configuration=Release
+    
+    - name: Publish NuGet package
+      run: |
+        dotnet nuget push Bank/Bank.Domain/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+    
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        files: |
+          Bank/Bank.Domain/*.nupkg
+        body: |
+          # Bank Domain Release v${{ steps.get_version.outputs.VERSION }}
+          
+          ## Changes in this release
+          - Improved functionality
+          - Bug fixes
+          
+          ## Installation
+          ```
+          dotnet add package Aakhtar004.Bank.Domain --version ${{ steps.get_version.outputs.VERSION }}
+          ```

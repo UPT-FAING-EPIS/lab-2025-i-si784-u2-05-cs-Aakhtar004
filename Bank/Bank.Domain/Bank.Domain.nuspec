@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Aakhtar004.Bank.Domain</id>
+    <version>1.0.0</version>
+    <title>Bank Domain</title>
+    <authors>Aakhtar004</authors>
+    <description>A simple bank domain model with basic account operations</description>
+    <projectUrl>https://github.com/Aakhtar004/lab-2025-i-si784-u2-05-cs-Aakhtar004</projectUrl>
+    <tags>banking finance domain</tags>
+    <readme>docs\README.md</readme>
+    <dependencies>
+      <group targetFramework="net9.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\README.md" target="docs\" />
+    <file src="bin\Release\net9.0\Bank.Domain.dll" target="lib\net9.0\" />
+    <file src="bin\Release\net9.0\Bank.Domain.xml" target="lib\net9.0\" />
+  </files>
+</package>
