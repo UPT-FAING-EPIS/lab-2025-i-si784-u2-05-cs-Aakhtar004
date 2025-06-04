@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>SESION DE LABORATORIO N&#176; 05: PRUEBAS CON MUTACIONES | Bank Domain Documentation </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="SESION DE LABORATORIO N&#176; 05: PRUEBAS CON MUTACIONES | Bank Domain Documentation ">
+    
+    
+      <link rel="shortcut icon" href="favicon.ico">
+      <link rel="stylesheet" href="styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="styles/docfx.css">
+      <link rel="stylesheet" href="styles/main.css">
+      <meta property="docfx:navrel" content="toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="Bank Domain Documentation">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="https://classroom.github.com/a/Cg1EVVDK"><img src="https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg" alt="Review Assignment Due Date"></a>
+<a href="https://classroom.github.com/open-in-codespaces?assignment_repo_id=19670168"><img src="https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg" alt="Open in Codespaces"></a></p>
+<h1 id="sesion-de-laboratorio-n-05-pruebas-con-mutaciones">SESION DE LABORATORIO N° 05: PRUEBAS CON MUTACIONES</h1>
+<h3 id="nombre">Nombre:</h3>
+<h2 id="objetivos">OBJETIVOS</h2>
+<ul>
+<li>Comprender el funcionamiento de las pruebas con mutanciones utilizando Stryker mutator.</li>
+</ul>
+<h2 id="requerimientos">REQUERIMIENTOS</h2>
+<ul>
+<li>Conocimientos:
+<ul>
+<li>Conocimientos básicos de Bash (powershell).</li>
+<li>Conocimientos básicos de Contenedores (Docker).</li>
+</ul>
+</li>
+<li>Hardware:
+<ul>
+<li>Virtualization activada en el BIOS..</li>
+<li>CPU SLAT-capable feature.</li>
+<li>Al menos 4GB de RAM.</li>
+</ul>
+</li>
+<li>Software:
+<ul>
+<li>Windows 10 64bit: Pro, Enterprise o Education (1607 Anniversary Update, Build 14393 o Superior)</li>
+<li>Docker Desktop</li>
+<li>Powershell versión 7.x</li>
+<li>Net 8 o superior</li>
+<li>Visual Studio Code</li>
+</ul>
+</li>
+</ul>
+<h2 id="consideraciones-iniciales">CONSIDERACIONES INICIALES</h2>
+<ul>
+<li>Clonar el repositorio mediante git para tener los recursos necesarios</li>
+</ul>
+<h2 id="desarrollo">DESARROLLO</h2>
+<ol>
+<li>Iniciar la aplicación Powershell o Windows Terminal en modo administrador</li>
+<li>Ejecutar el siguiente comando para crear una nueva solución</li>
+</ol>
+<pre><code>dotnet new sln -o Bank
+</code></pre>
+<ol start="3">
+<li>Acceder a la solución creada y ejecutar el siguiente comando para crear una nueva libreria de clases y adicionarla a la solución actual.</li>
+</ol>
+<pre><code>cd Bank
+dotnet new classlib -o Bank.Domain
+dotnet sln add ./Bank.Domain/Bank.Domain.csproj
+</code></pre>
+<ol start="4">
+<li>Ejecutar el siguiente comando para crear un nuevo proyecto de pruebas y adicionarla a la solución actual</li>
+</ol>
+<pre><code>dotnet new xunit -o Bank.Domain.Tests
+dotnet sln add ./Bank.Domain.Tests/Bank.Domain.Tests.csproj
+dotnet add ./Bank.Domain.Tests/Bank.Domain.Tests.csproj reference ./Bank.Domain/Bank.Domain.csproj
+</code></pre>
+<ol start="5">
+<li><p>Iniciar Visual Studio Code (VS Code) abriendo el folder de la solución como proyecto. En el proyecto Bank.Domain, si existe un archivo Class1.cs proceder a eliminarlo. Asimismo en el proyecto Bank.Domain.Tests si existiese un archivo UnitTest1.cs, también proceder a eliminarlo.</p>
+</li>
+<li><p>En VS Code, en el proyecto Bank.Domain proceder a crear el archivo BankAccount.cs e introducir el siguiente código:</p>
+</li>
+</ol>
+<pre><code class="lang-C#">public class BankAccount
+{
+    public const string DebitAmountExceedsBalanceMessage = &quot;Debit amount exceeds balance&quot;;
+    public const string DebitAmountLessThanZeroMessage = &quot;Debit amount is less than zero&quot;;
+    private readonly string m_customerName;
+    private double m_balance;
+    private BankAccount() { }
+    public BankAccount(string customerName, double balance)
+    {
+        m_customerName = customerName;
+        m_balance = balance;
+    }
+    public string CustomerName { get { return m_customerName; } }
+    public double Balance { get { return m_balance; }  }
+    public void Debit(double amount)
+    {
+        if (amount &gt; m_balance)
+            throw new ArgumentOutOfRangeException(&quot;amount&quot;, amount, DebitAmountExceedsBalanceMessage);
+        if (amount &lt; 0)
+            throw new ArgumentOutOfRangeException(&quot;amount&quot;, amount, DebitAmountLessThanZeroMessage);
+        m_balance -= amount; 
+    }
+    public void Credit(double amount)
+    {
+        if (amount &lt; 0)
+            throw new ArgumentOutOfRangeException(&quot;amount&quot;);
+        m_balance += amount;
+    }
+}
+</code></pre>
+<ol start="7">
+<li>Luego en el proyecto Bank.Domain.Tests añadir un nuevo archivo BanckAccountTests.cs e introducir el siguiente código:</li>
+</ol>
+<pre><code class="lang-C#">using Bank.Domain;
+using System;
+using Xunit;
+
+namespace Bank.Domain.Tests;
+public class BankAccountTests
+{
+    [Theory]
+    [InlineData(11.99, 4.55, 7.44)]
+    [InlineData(12.3, 5.2, 7.1)]
+    public void MultiDebit_WithValidAmount_UpdatesBalance(
+        double beginningBalance, double debitAmount, double expected )
+    {
+        // Arrange
+        BankAccount account = new BankAccount(&quot;Mr. Bryan Walton&quot;, beginningBalance);
+        // Act
+        account.Debit(debitAmount);
+        // Assert
+        double actual = account.Balance;
+        Assert.Equal(Math.Round(expected,2), Math.Round(actual,2));
+    }
+
+    [Fact]
+    public void Debit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange()
+    {
+        // Arrange
+        double beginningBalance = 11.99;
+        double debitAmount = -100.00;
+        BankAccount account = new BankAccount(&quot;Mr. Bryan Walton&quot;, beginningBalance);
+        // Act and assert
+        Assert.Throws&lt;System.ArgumentOutOfRangeException&gt;(() =&gt; account.Debit(debitAmount));
+    }
+
+    [Fact]
+    public void Debit_WhenAmountIsMoreThanBalance_ShouldThrowArgumentOutOfRange()
+    {
+        // Arrange
+        double beginningBalance = 11.99;
+        double debitAmount = 20.0;
+        BankAccount account = new BankAccount(&quot;Mr. Bryan Walton&quot;, beginningBalance);
+        // Act
+        try
+        {
+            account.Debit(debitAmount);
+        }
+        catch (System.ArgumentOutOfRangeException e)
+        {
+            // Assert
+            Assert.Contains(BankAccount.DebitAmountExceedsBalanceMessage, e.Message);
+        }
+    }
+}
+</code></pre>
+<ol start="8">
+<li>Abrir un terminal en VS Code (CTRL + Ñ) o vuelva al terminal anteriormente abierto, y ejecutar los comandos:</li>
+</ol>
+<pre><code class="lang-Bash">dotnet test --collect:&quot;XPlat Code Coverage&quot;
+</code></pre>
+<ol start="9">
+<li>El paso anterior debe producir un resultado satisfactorio como el siguiente.</li>
+</ol>
+<pre><code class="lang-Bash">Failed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     1, Duration: &lt; 1 ms
+</code></pre>
+<ol start="10">
+<li>En el terminal, proceder a ejecutar los siguientes comandos para realizar pruebas de mutacion</li>
+</ol>
+<pre><code class="lang-Bash">dotnet tool install -g dotnet-stryker
+dotnet stryker
+</code></pre>
+<ol start="11">
+<li>El paso anterior debe producir un resultado satisfactorio similar al siguiente.</li>
+</ol>
+<pre><code class="lang-Bash">   _____ _              _               _   _ ______ _______  
+  / ____| |            | |             | \ | |  ____|__   __| 
+ | (___ | |_ _ __ _   _| | _____ _ __  |  \| | |__     | |    
+  \___ \| __| '__| | | | |/ / _ \ '__| | . ` |  __|    | |    
+  ____) | |_| |  | |_| |   &lt;  __/ |    | |\  | |____   | |    
+ |_____/ \__|_|   \__, |_|\_\___|_| (_)|_| \_|______|  |_|    
+                   __/ |                                      
+                  |___/                                       
+
+
+Version: 4.3.0
+
+[08:42:56 INF] Analysis starting.
+[08:42:56 INF] Identifying projects to mutate in C:\Users\HP\source\repos\Bank\Bank.sln. This can take a while.
+[08:42:57 INF] Found project C:\Users\HP\source\repos\Bank\Bank.Domain\Bank.Domain.csproj to mutate.
+[08:42:57 INF] Analysis complete.
+[08:42:57 INF] Building solution Bank.sln
+[08:42:57 INF] Building project Bank.sln using dotnet build Bank.sln (directory C:\Users\HP\source\repos\Bank.)
+[08:43:00 INF] Number of tests found: 4 for project C:\Users\HP\source\repos\Bank\Bank.Domain\Bank.Domain.csproj. Initial test run started.
+[08:43:02 INF] 22 mutants created
+[08:43:02 INF] Capture mutant coverage using 'CoverageBasedTest' mode.
+Hint: by passing &quot;--open-report or -o&quot; the report will open automatically and update the report in real-time.
+[08:43:02 INF] 7     mutants got status NoCoverage.   Reason: Not covered by any test.
+[08:43:02 INF] 2     mutants got status Ignored.      Reason: Removed by block already covered filter
+[08:43:02 INF] 9     total mutants are skipped for the above mentioned reasons
+[08:43:02 INF] 13    total mutants will be tested
+██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████100,00% │ Testing mutant 13 / 13 │ K 8 │ S 5 │ T 0 │ ~0m 00s │                                                                                                                                                    00:00:16
+
+Killed:    8
+Survived:  5
+Timeout:   0
+
+Your html report has been generated at:
+C:\Users\HP\source\repos\Bank\StrykerOutput\2024-10-26.08-42-55\reports\mutation-report.html
+You can open it in your browser of choice.
+</code></pre>
+<ol start="12">
+<li>Finalmente proceder a verificar la cobertura, dentro del proyecto Primes.Tests se dede haber generado una carpeta o directorio TestResults, en el cual posiblemente exista otra subpcarpeta o subdirectorio conteniendo un archivo con nombre <code>coverage.cobertura.xml</code>, si existe ese archivo proceder a ejecutar los siguientes comandos desde la linea de comandos abierta anteriomente, de los contrario revisar el paso 8:</li>
+</ol>
+<pre><code>dotnet tool install -g dotnet-reportgenerator-globaltool
+ReportGenerator &quot;-reports:./*/*/*/coverage.cobertura.xml&quot; &quot;-targetdir:Cobertura&quot; -reporttypes:HTML
+</code></pre>
+<ol start="13">
+<li>El comando anterior primero proceda instalar una herramienta llamada ReportGenerator (<a href="https://reportgenerator.io/">https://reportgenerator.io/</a>) la cual mediante la segunda parte del comando permitira generar un reporte en formato HTML con la cobertura obtenida de la ejecución de las pruebas. Este reporte debe localizarse dentro de una carpeta llamada Cobertura y puede acceder a el abriendo con un navegador de internet el archivo index.htm.</li>
+</ol>
+<hr>
+<h1 id="bank-domain">Bank Domain</h1>
+<p>A simple bank domain model implementing basic banking operations for educational purposes.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Create bank accounts with an initial balance</li>
+<li>Debit and credit operations with validation</li>
+<li>Full unit test coverage</li>
+</ul>
+<h2 id="documentation">Documentation</h2>
+<p>For full API documentation, visit our <a href="https://Aakhtar004.github.io/lab-2025-i-si784-u2-05-cs-Aakhtar004/docs/">documentation site</a>.</p>
+<h2 id="test-coverage">Test Coverage</h2>
+<p>This project has 100% code coverage as verified by automated tests.</p>
+<hr>
+<h2 id="actividades-encargadas">Actividades Encargadas</h2>
+<ol>
+<li>Adicionar los escenarios, casos de prueba, metodos de prueba para las mutaciones no coberturadas (7) e ignoradas (2) para completar la cobertura del 100% del código.</li>
+<li>Completar la documentación del Clases, atributos y métodos para luego generar una automatización (publish_docs.yml) que genere la documentación utilizando DocFx y la publique en una Github Page</li>
+<li>Generar una automatización (publish_cov_report.yml) que: * Compile el proyecto y ejecute las pruebas unitarias, * Genere el reporte de cobertura, * Publique el reporte en Github Page</li>
+<li>Generar una automatización (publish_mut_report.yml) que: * compile el proyecto y ejecute las pruebas del código * Genere el reporte de mutaciones (Striker) * Publique el reporte en Github Page.</li>
+<li>Generar una automatización (release.yml) que: * Genere el nuget con su codigo de matricula como version del componente, * Publique el nuget en Github Packages, * Genere el release correspondiente</li>
+</ol>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/UPT-FAING-EPIS/lab-2025-i-si784-u2-05-cs-Aakhtar004/blob/main/README.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>

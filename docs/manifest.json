@@ -1,54 +1,21 @@
 {
-  "source_base_path": "/home/runner/work/lab-2025-i-si784-u2-05-cs-Aakhtar004/lab-2025-i-si784-u2-05-cs-Aakhtar004/Bank",
+  "source_base_path": "/home/runner/work/lab-2025-i-si784-u2-05-cs-Aakhtar004/lab-2025-i-si784-u2-05-cs-Aakhtar004",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bank.Domain.Tests.BankAccountTests.yml",
+      "type": "Resource",
       "output": {
-        ".html": {
-          "relative_path": "api/Bank.Domain.Tests.BankAccountTests.html"
+        "resource": {
+          "relative_path": "index.json"
         }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bank.Domain.Tests.BankAccountTests",
-      "Summary": null
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bank.Domain.Tests.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bank.Domain.Tests.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bank.Domain.Tests",
-      "Summary": null
+      }
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "api/index.md",
+      "source_relative_path": "README.md",
       "output": {
         ".html": {
-          "relative_path": "api/index.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Toc",
-      "source_relative_path": "api/toc.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/toc.html"
-        },
-        ".json": {
-          "relative_path": "api/toc.json"
+          "relative_path": "README.html"
         }
       },
       "version": ""
