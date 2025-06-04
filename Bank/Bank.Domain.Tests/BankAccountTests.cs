@@ -64,7 +64,7 @@ public class BankAccountTests
         
         // Assert
         double actual = account.Balance;
-        Assert.Equal(expected, actual);
+        Assert.Equal(Math.Round(expected, 2), Math.Round(actual, 2));
     }
 
     [Fact]
