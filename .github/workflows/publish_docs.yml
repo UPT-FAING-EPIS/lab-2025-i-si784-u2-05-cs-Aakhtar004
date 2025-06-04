@@ -5,10 +5,10 @@ on:
     branches: [ main ]
     paths:
       - 'Bank/**/*.cs'
-      - '*.md'
       - 'docfx.json'
       - 'toc.yml'
       - 'api/**/*'
+      - 'index.md'
       - '.github/workflows/publish_docs.yml'
 
 jobs:

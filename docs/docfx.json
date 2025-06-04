@@ -4,9 +4,9 @@
     {
       "src": [
         {
-          "src": "../src",
+          "src": "../Bank",
           "files": [
-            "**/*.csproj"
+            "**/Bank.Domain.csproj"
           ]
         }
       ],
@@ -17,30 +17,24 @@
     "content": [
       {
         "files": [
-          "**/*.{md,yml}"
-        ],
-        "exclude": [
-          "_site/**"
+          "api/**.yml",
+          "api/index.md"
         ]
-      }
-    ],
-    "resource": [
+      },
       {
         "files": [
-          "images/**"
+          "*.md",
+          "toc.yml"
         ]
       }
     ],
-    "output": "_site",
-    "template": [
-      "default",
-      "modern"
-    ],
+    "dest": "_site",
     "globalMetadata": {
-      "_appName": "Lab 5 Mutations",
-      "_appTitle": "Lab 5 Mutations",
-      "_enableSearch": true,
-      "pdf": true
-    }
+      "_appName": "Bank Domain Documentation",
+      "_appTitle": "Bank Domain Documentation"
+    },
+    "template": [
+      "default"
+    ]
   }
 }

@@ -1,14 +1,12 @@
-# Bank Domain
+# Bank Domain Library
 
-Welcome to the Bank Domain documentation.
+This is the Bank Domain library that provides basic banking functionality including account management, deposits, and withdrawals.
 
-This project provides a simple banking domain model with basic functionality for bank accounts.
+## Features
 
-## Main Features
-
-- Create bank accounts with an initial balance
-- Debit funds from accounts with validation
-- Credit funds to accounts with validation
+- Account creation and management
+- Secure debit and credit operations
+- Comprehensive validation and error handling
 
 ## API Reference
 
