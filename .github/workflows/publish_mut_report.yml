@@ -23,6 +23,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Bank/Bank.sln
     
+    - name: Build
+      run: dotnet build Bank/Bank.sln --configuration Release --no-restore
+    
     - name: Install Stryker
       run: dotnet tool install -g dotnet-stryker
     
@@ -35,5 +38,5 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./Bank/StrykerOutput/reports
+        publish_dir: ./Bank/Bank.Domain.Tests/StrykerOutput
         destination_dir: mutation

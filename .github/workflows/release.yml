@@ -20,6 +20,10 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Create nuspec folder structure
+      run: |
+        mkdir -p Bank/nuget/lib/net9.0
+    
     - name: Restore dependencies
       run: dotnet restore Bank/Bank.sln
     
@@ -33,18 +37,19 @@ jobs:
       id: get_version
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
     
-    - name: Update package version
+    - name: Copy DLL files to nuget structure
       run: |
-        sed -i "s/<version>1.0.0<\/version>/<version>Aakhtar004-${{ steps.get_version.outputs.VERSION }}<\/version>/" Bank/Bank.Domain/Bank.Domain.nuspec
+        cp Bank/Bank.Domain/bin/Release/net9.0/Bank.Domain.dll Bank/nuget/lib/net9.0/
+        cp Bank/Bank.Domain/bin/Release/net9.0/Bank.Domain.xml Bank/nuget/lib/net9.0/ || true
     
-    - name: Pack
+    - name: Create NuGet package
       run: |
-        cd Bank/Bank.Domain
-        nuget pack Bank.Domain.nuspec -Properties Configuration=Release
+        cd Bank
+        dotnet pack Bank.Domain/Bank.Domain.csproj --configuration Release -p:PackageVersion=Aakhtar004-${{ steps.get_version.outputs.VERSION }} -p:PackageId=Aakhtar004.Bank.Domain -o nuget
     
     - name: Publish NuGet package
       run: |
-        dotnet nuget push Bank/Bank.Domain/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        dotnet nuget push Bank/nuget/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
     
     - name: Create Release
       id: create_release
@@ -56,15 +61,13 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          Bank/Bank.Domain/*.nupkg
+          Bank/nuget/*.nupkg
         body: |
           # Bank Domain Release v${{ steps.get_version.outputs.VERSION }}
           
-          ## Changes in this release
-          - Improved functionality
-          - Bug fixes
+          Release de la librería Bank Domain conteniendo funcionalidades básicas para cuentas bancarias.
           
           ## Installation
           ```
-          dotnet add package Aakhtar004.Bank.Domain --version ${{ steps.get_version.outputs.VERSION }}
+          dotnet add package Aakhtar004.Bank.Domain --version Aakhtar004-${{ steps.get_version.outputs.VERSION }}
           ```

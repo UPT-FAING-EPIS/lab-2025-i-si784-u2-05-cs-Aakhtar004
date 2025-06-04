@@ -5,7 +5,10 @@ on:
     branches: [ main ]
     paths:
       - 'Bank/**/*.cs'
-      - 'Bank/docfx.json'
+      - '*.md'
+      - 'docfx.json'
+      - 'toc.yml'
+      - 'api/**/*'
       - '.github/workflows/publish_docs.yml'
 
 jobs:
@@ -24,13 +27,11 @@ jobs:
       run: dotnet tool install -g docfx
     
     - name: Build Documentation
-      run: |
-        cd Bank
-        docfx docfx.json
+      run: docfx docfx.json
     
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./Bank/_site
+        publish_dir: _site
         destination_dir: docs
