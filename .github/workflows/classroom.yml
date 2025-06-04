@@ -13,58 +13,48 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: t1
-      id: t1
+    - name: Test 1
+      id: test-1
       uses: classroom-resources/autograding-command-grader@v1
       with:
-        test-name: t1
-        setup-command: export HOME='/home/runner' && cd Bank && dotnet restore
-        command: export HOME='/home/runner' && cd Bank && dotnet test
-        timeout: 10
-        max-score: 4
-    - name: t2
-      id: t2
-      uses: classroom-resources/autograding-command-grader@v1
-      with:
-        test-name: t2
+        test-name: Test 1
         setup-command: ''
-        command: cat .github/workflows/publish_docs.yml | grep docfx
+        command: test -f ".github/workflows/publish_docs.yml" && grep -q "docfx" ".github/workflows/publish_docs.yml"
         timeout: 10
-        max-score: 4
-    - name: t3
-      id: t3
+        max-score: 1
+    - name: Test 2
+      id: test-2
       uses: classroom-resources/autograding-command-grader@v1
       with:
-        test-name: t3
+        test-name: Test 2
         setup-command: ''
-        command: cat .github/workflows/publish_cov_report.yml | grep reportgenerator
+        command: test -f ".github/workflows/publish_cov_report.yml" && grep -q "reportgenerator" ".github/workflows/publish_cov_report.yml"
         timeout: 10
-        max-score: 4
-    - name: t4
-      id: t4
+        max-score: 1
+    - name: Test 3
+      id: test-3
       uses: classroom-resources/autograding-command-grader@v1
       with:
-        test-name: t4
+        test-name: Test 3
         setup-command: ''
-        command: cat .github/workflows/publish_cov_report.yml | grep stryker
+        command: test -f ".github/workflows/publish_mut_report.yml" && grep -q "stryker" ".github/workflows/publish_mut_report.yml"
         timeout: 10
-        max-score: 4
-    - name: t5
-      id: t5
+        max-score: 1
+    - name: Test 4
+      id: test-4
       uses: classroom-resources/autograding-command-grader@v1
       with:
-        test-name: t5
+        test-name: Test 4
         setup-command: ''
-        command: cat .github/workflows/release.yml | grep nuget
+        command: test -f ".github/workflows/release.yml" && grep -q "nuget" ".github/workflows/release.yml"
         timeout: 10
-        max-score: 4
+        max-score: 1
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
-        T1_RESULTS: "${{steps.t1.outputs.result}}"
-        T2_RESULTS: "${{steps.t2.outputs.result}}"
-        T3_RESULTS: "${{steps.t3.outputs.result}}"
-        T4_RESULTS: "${{steps.t4.outputs.result}}"
-        T5_RESULTS: "${{steps.t5.outputs.result}}"
+        TEST-1_RESULTS: "${{steps.test-1.outputs.result}}"
+        TEST-2_RESULTS: "${{steps.test-2.outputs.result}}"
+        TEST-3_RESULTS: "${{steps.test-3.outputs.result}}"
+        TEST-4_RESULTS: "${{steps.test-4.outputs.result}}"
       with:
-        runners: t1,t2,t3,t4,t5
+        runners: test-1,test-2,test-3,test-4

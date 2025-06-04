@@ -202,9 +202,17 @@ A simple bank domain model implementing basic banking operations for educational
 - Debit and credit operations with validation
 - Full unit test coverage
 
+## Getting Started
+
+```csharp
+var account = new BankAccount("John Doe", 1000);
+account.Debit(500); // Balance becomes 500
+account.Credit(200); // Balance becomes 700
+```
+
 ## Documentation
 
-For full API documentation, visit our [documentation site](https://Aakhtar004.github.io/lab-2025-i-si784-u2-05-cs-Aakhtar004/docs/).
+For full API documentation, visit our [documentation site](https://aakhtar004.github.io/lab-2025-i-si784-u2-05-cs-Aakhtar004/docs/).
 
 ## Test Coverage
 
