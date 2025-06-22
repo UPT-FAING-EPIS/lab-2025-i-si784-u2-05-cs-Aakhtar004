@@ -1,73 +1,48 @@
-name: Create Release and Publish Package
+name: 5. Create Release and Publish Package
 
-on:
-  push:
-    tags:
-      - 'v*'
+env:
+  DOTNET_VERSION: '8.0'
+
+on: push
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '9.0.x'
-        source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Create nuspec folder structure
-      run: |
-        mkdir -p Bank/nuget/lib/net9.0
-    
-    - name: Restore dependencies
-      run: dotnet restore Bank/Bank.sln
-    
-    - name: Build
-      run: dotnet build Bank/Bank.sln --configuration Release --no-restore
-    
-    - name: Test
-      run: dotnet test Bank/Bank.sln --configuration Release --no-build
-    
-    - name: Extract tag version
-      id: get_version
-      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-    
-    - name: Copy DLL files to nuget structure
-      run: |
-        cp Bank/Bank.Domain/bin/Release/net9.0/Bank.Domain.dll Bank/nuget/lib/net9.0/
-        cp Bank/Bank.Domain/bin/Release/net9.0/Bank.Domain.xml Bank/nuget/lib/net9.0/ || true
-    
-    - name: Create NuGet package
-      run: |
-        cd Bank
-        dotnet pack Bank.Domain/Bank.Domain.csproj --configuration Release -p:PackageVersion=Aakhtar004-${{ steps.get_version.outputs.VERSION }} -p:PackageId=Aakhtar004.Bank.Domain -o nuget
-    
-    - name: Publish NuGet package
-      run: |
-        dotnet nuget push Bank/nuget/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-    
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        name: Release ${{ steps.get_version.outputs.VERSION }}
-        draft: false
-        prerelease: false
-        files: |
-          Bank/nuget/*.nupkg
-        body: |
-          # Bank Domain Release v${{ steps.get_version.outputs.VERSION }}
-          
-          Release de la librería Bank Domain conteniendo funcionalidades básicas para cuentas bancarias.
-          
-          ## Installation
-          ```
-          dotnet add package Aakhtar004.Bank.Domain --version Aakhtar004-${{ steps.get_version.outputs.VERSION }}
-          ```
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+      - name: Restore dependencies && Build solution
+        run: |
+          cd Bank
+          dotnet restore
+          dotnet build --configuration Release
+
+      - name: Pack NuGet package
+        run: |
+          dotnet pack Bank/Bank.Domain/Bank.Domain.csproj -c Release \
+            -p:PackageVersion=202.207.4261 \
+            -p:RepositoryUrl=https://github.com/${{ github.repository }} \
+            -p:RepositoryType=git
+      
+      - name: NuGet sources
+        run: dotnet nuget list source
+      
+      - name: Push NuGet package to GitHub Packages
+        run: |
+          dotnet nuget push Bank/Bank.Domain/bin/Release/*.nupkg \ 
+          --skip-duplicate \ 
+          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \ 
+          --api-key ${{ secrets.PACKAGE_NUGET }}
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2022074261
+          name: Release v2022074261
+          files: "**/*.nupkg"

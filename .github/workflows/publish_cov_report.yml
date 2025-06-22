@@ -1,43 +1,40 @@
-name: Publish Coverage Report
-
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'Bank/**/*.cs'
-      - 'Bank/**/*.csproj'
-      - '.github/workflows/publish_cov_report.yml'
+name: 3. Publish Coverage Report
+env:
+  DOTNET_VERSION: '8.0'
+on: push
 
 jobs:
-  build:
+  test-and-publish-coverage:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v4
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Configurando la versión de NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     
-    - name: Restore dependencies
-      run: dotnet restore Bank/Bank.sln
-    
-    - name: Build
-      run: dotnet build Bank/Bank.sln --configuration Release --no-restore
-    
-    - name: Test with Coverage
-      run: dotnet test Bank/Bank.sln --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage || true
+    - name: Restore dependencies & Run tests with coverage
+      run: |
+        cd Bank
+        dotnet restore
+        dotnet test --collect:"XPlat Code Coverage"
     
     - name: Install ReportGenerator
-      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        dotnet tool install -g dotnet-stryker
     
-    - name: Generate Coverage Report
-      run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
+    - name: Generate coverage Report
+      run: |
+        cd Bank
+        reportgenerator "-reports:./*/*/*/coverage.cobertura.xml" "-targetdir:Cobertura" -reporttypes:"HTML"
     
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Deploy coverage report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./coverage/report
-        destination_dir: coverage
+        publish_dir: Bank/Cobertura
+        destination_dir: docs/Cobertura
+        keep_files: true 

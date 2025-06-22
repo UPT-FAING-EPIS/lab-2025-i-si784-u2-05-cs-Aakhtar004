@@ -16,7 +16,7 @@ public class BankAccount
     /// <summary>
     /// The customer name associated with this account.
     /// </summary>
-    private readonly string m_customerName;
+    private readonly string m_customerName = string.Empty;
     
     /// <summary>
     /// The current balance of the account.

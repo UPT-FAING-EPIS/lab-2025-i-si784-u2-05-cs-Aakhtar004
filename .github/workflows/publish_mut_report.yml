@@ -1,42 +1,47 @@
-name: Publish Mutation Report
+name: 4. Publish Mutation Report
 
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'Bank/**/*.cs'
-      - 'Bank/**/*.csproj'
-      - '.github/workflows/publish_mut_report.yml'
+env:
+  DOTNET_VERSION: '8.0'
+
+on: push
 
 jobs:
-  build:
+  test-and-publish-coverage:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v4
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    - name: Configurando la versión de NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     
-    - name: Restore dependencies
-      run: dotnet restore Bank/Bank.sln
-    
-    - name: Build
-      run: dotnet build Bank/Bank.sln --configuration Release --no-restore
+    - name: Restore dependencies & Run tests with coverage
+      run: |
+        cd Bank
+        dotnet restore
+        dotnet test --collect:"XPlat Code Coverage"
     
     - name: Install Stryker
       run: dotnet tool install -g dotnet-stryker
     
-    - name: Run Mutation Testing
+    - name: Generate mutation Report
       run: |
-        cd Bank/Bank.Domain.Tests
+        cd Bank
         dotnet stryker
     
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Find Stryker report folder and move it to a fixed path
+      run: |
+        mkdir -p Bank/StrykerReport
+        REPORT_DIR=$(find Bank/StrykerOutput -type d -name reports | head -n 1)
+        echo "Nose encontro el reportte en: $REPORT_DIR"
+        cp -r "$REPORT_DIR/"* Bank/StrykerReport/
+    
+    - name: Deploy mutation report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./Bank/Bank.Domain.Tests/StrykerOutput
-        destination_dir: mutation
+        publish_dir: Bank/StrykerReport
+        destination_dir: docs/Stryker
+        keep_files: true
