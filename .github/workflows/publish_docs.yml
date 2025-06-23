@@ -175,66 +175,175 @@ jobs:
         ls -la _site/docs/ || echo "❌ Carpeta _site/docs no encontrada"
         test -f _site/docs/Bank.Domain.html && echo "✅ Bank.Domain.html encontrado" || echo "❌ Bank.Domain.html NO encontrado"
 
-    - name: DIAGNÓSTICO COMPLETO - Verificar generación de archivos
+    - name: ANÁLISIS COMPLETO DE GENERACIÓN - Rastrear todos los archivos
       run: |
-        echo "🔍 === DIAGNÓSTICO COMPLETO ==="
+        echo "🔬 === ANÁLISIS DETALLADO DE GENERACIÓN DE ARCHIVOS ==="
         echo ""
-        echo "📁 === 1. ESTRUCTURA ACTUAL DEL PROYECTO ==="
-        ls -la
+        
+        echo "📍 === 1. UBICACIÓN DE ARCHIVOS CRÍTICOS ==="
+        echo "🔍 Buscando index.html en TODO el sistema:"
+        find . -name "index.html" -type f 2>/dev/null | while read file; do
+          echo "  📄 $file - Tamaño: $(du -h "$file" | cut -f1)"
+        done
         echo ""
-        echo "📊 === 2. VERIFICAR REPORTE DE COBERTURA LOCAL ==="
+        
+        echo "🔍 Buscando Bank.Domain.html en TODO el sistema:"
+        find . -name "*Bank.Domain*" -type f 2>/dev/null | while read file; do
+          echo "  📄 $file - Tamaño: $(du -h "$file" | cut -f1)"
+        done
+        echo ""
+        
+        echo "🔍 Buscando archivos de cobertura:"
+        find . -path "*/Cobertura/*" -name "*.html" -type f 2>/dev/null | while read file; do
+          echo "  📊 $file - Tamaño: $(du -h "$file" | cut -f1)"
+        done
+        echo ""
+        
+        echo "📁 === 2. ESTRUCTURA COMPLETA DE DIRECTORIOS ==="
+        echo "🏗️ Estructura del directorio actual:"
+        tree -L 3 2>/dev/null || find . -type d | head -20 | sort
+        echo ""
+        
+        echo "📁 === 3. COMPARACIÓN: ANTES vs DESPUÉS DE DocFX ==="
+        echo "📊 Archivos en Cobertura/ (ANTES de DocFX):"
         if [ -d "Cobertura" ]; then
-          echo "✅ Carpeta Cobertura existe"
-          ls -la Cobertura/
-          if [ -f "Cobertura/index.html" ]; then
-            echo "✅ index.html encontrado - Tamaño: $(du -h Cobertura/index.html)"
-            echo "📝 Primeras 10 líneas:"
-            head -10 Cobertura/index.html
+          ls -la Cobertura/ | grep -E "\\.html$|\\.htm$"
+        else
+          echo "  ❌ Carpeta Cobertura no existe"
+        fi
+        echo ""
+        
+        echo "📊 Archivos en _site/Cobertura/ (DESPUÉS de DocFX):"
+        if [ -d "_site/Cobertura" ]; then
+          ls -la _site/Cobertura/ | grep -E "\\.html$|\\.htm$"
+        else
+          echo "  ❌ Carpeta _site/Cobertura no existe"
+        fi
+        echo ""
+        
+        echo "📋 === 4. RASTREO DE ARCHIVOS YAML/YML ==="
+        echo "🔍 Archivos YAML generados por DocFX metadata:"
+        find . -name "*.yml" -o -name "*.yaml" | while read file; do
+          echo "  📝 $file:"
+          if [ -s "$file" ]; then
+            echo "    ✅ Tamaño: $(du -h "$file" | cut -f1)"
+            echo "    📄 Primeras 3 líneas:"
+            head -3 "$file" | sed 's/^/      /'
           else
-            echo "❌ index.html NO encontrado"
+            echo "    ❌ Archivo vacío"
+          fi
+          echo ""
+        done
+        
+        echo "🎯 === 5. ANÁLISIS DE LA CONFIGURACIÓN DocFX ==="
+        echo "📋 Configuración actual de docfx.json - sección resources:"
+        if [ -f "docfx.json" ]; then
+          echo "  📝 Contenido completo de docfx.json:"
+          cat docfx.json | jq . 2>/dev/null || cat docfx.json
+        else
+          echo "  ❌ docfx.json no encontrado"
+        fi
+        echo ""
+        
+        echo "🔄 === 6. PROCESO DE COPIA DE DocFX ==="
+        echo "📊 Verificando qué archivos DocFX está procesando/copiando:"
+        echo "  📂 Archivos que coinciden con 'images/**':"
+        find . -path "*/images/*" -type f 2>/dev/null || echo "    ❌ No hay archivos en images/"
+        echo ""
+        echo "  📂 Archivos que coinciden con '**/*.{md,yml}':"
+        find . \( -name "*.md" -o -name "*.yml" \) -not -path "./_site/*" -type f | head -10
+        echo ""
+        
+        echo "🚫 === 7. ARCHIVOS EXCLUIDOS ==="
+        echo "📋 Verificando archivos excluidos por configuración:"
+        echo "  ❌ Archivos excluidos explícitamente:"
+        [ -f "Cobertura/index.html" ] && echo "    🚫 Cobertura/index.html está EXCLUIDO en docfx.json" || echo "    ❓ Cobertura/index.html no existe"
+        [ -f "Stryker/mutation-report.html" ] && echo "    🚫 Stryker/mutation-report.html está EXCLUIDO en docfx.json" || echo "    ❓ Stryker/mutation-report.html no existe"
+        echo ""
+        
+        echo "📤 === 8. DESTINO FINAL DE PUBLICACIÓN ==="
+        echo "🎯 Archivos que realmente se van a publicar en GitHub Pages:"
+        if [ -d "_site" ]; then
+          echo "  📊 Total de archivos en _site: $(find _site -type f | wc -l)"
+          echo "  📄 Archivos HTML en _site:"
+          find _site -name "*.html" -type f | while read file; do
+            relpath=${file#_site/}
+            echo "    ✅ $relpath - $(du -h "$file" | cut -f1)"
+          done
+        else
+          echo "  ❌ Directorio _site no existe"
+        fi
+        echo ""
+        
+        echo "🌐 === 9. URLs FINALES ESPERADAS ==="
+        echo "🔗 URLs que deberían funcionar después de la publicación:"
+        base_url="https://upt-faing-epis.github.io/lab-2025-i-si784-u2-05-cs-Aakhtar004/docs"
+        echo "  🏠 Página principal: $base_url/index.html"
+        [ -f "_site/Cobertura/index.html" ] && echo "  ✅ Cobertura: $base_url/Cobertura/index.html" || echo "  ❌ Cobertura: $base_url/Cobertura/index.html (FALTANTE)"
+        [ -f "_site/docs/Bank.Domain.html" ] && echo "  ✅ API Docs: $base_url/docs/Bank.Domain.html" || echo "  ❌ API Docs: $base_url/docs/Bank.Domain.html (FALTANTE)"
+        [ -f "_site/Stryker/mutation-report.html" ] && echo "  ✅ Mutaciones: $base_url/Stryker/mutation-report.html" || echo "  ❌ Mutaciones: $base_url/Stryker/mutation-report.html (FALTANTE)"
+        [ -f "_site/clases.html" ] && echo "  ✅ Diagrama: $base_url/clases.html" || echo "  ❌ Diagrama: $base_url/clases.html (FALTANTE)"
+        echo ""
+        
+        echo "⚠️ === 10. DIAGNÓSTICO DE PROBLEMAS ==="
+        echo "🔍 Identificando por qué los archivos no están donde deberían:"
+        echo ""
+        echo "  🧪 PROBLEMA 1 - Cobertura:"
+        if [ -f "Cobertura/index.html" ] && [ ! -f "_site/Cobertura/index.html" ]; then
+          echo "    ❌ Cobertura/index.html existe pero NO se copia a _site/"
+          echo "    🔧 CAUSA: Está EXCLUIDO en docfx.json o no incluido en resources"
+        elif [ ! -f "Cobertura/index.html" ]; then
+          echo "    ❌ Cobertura/index.html NO se está generando"
+          echo "    🔧 CAUSA: reportgenerator no está generando HTML"
+        else
+          echo "    ✅ Cobertura OK"
+        fi
+        echo ""
+        
+        echo "  🧪 PROBLEMA 2 - API Documentation:"
+        if [ ! -f "_site/docs/Bank.Domain.html" ]; then
+          echo "    ❌ docs/Bank.Domain.html NO existe en _site/"
+          if [ -z "$(find docs -name "*.yml" 2>/dev/null)" ]; then
+            echo "    🔧 CAUSA: DocFX metadata no genera archivos YML (no hay clases públicas)"
+          else
+            echo "    🔧 CAUSA: DocFX build no procesa los archivos YML correctamente"
           fi
         else
-          echo "❌ Carpeta Cobertura NO existe"
+          echo "    ✅ API Documentation OK"
         fi
         echo ""
-        echo "🏗️ === 3. VERIFICAR CONSTRUCCIÓN DocFX ==="
-        if [ -d "_site" ]; then
-          echo "✅ Carpeta _site existe"
-          echo "📁 Contenido de _site:"
-          find _site -type f | head -20
-          echo ""
-          echo "🔍 Buscar archivos HTML específicos:"
-          find _site -name "*.html" -exec basename {} \; | sort | uniq
-        else
-          echo "❌ Carpeta _site NO existe"
-        fi
-        echo ""
-        echo "📋 === 4. VERIFICAR ARCHIVOS YAML DE METADATA ==="
-        if [ -d "docs" ]; then
-          echo "✅ Carpeta docs existe"
-          find docs -name "*.yml" -o -name "*.yaml" | head -10
-        else
-          echo "❌ Carpeta docs NO existe"
-        fi
-        echo ""
-        echo "🎯 === 5. VERIFICAR ENLACES ESPECÍFICOS ==="
-        echo "Buscando archivos que deberían existir:"
-        test -f "_site/Cobertura/index.html" && echo "✅ _site/Cobertura/index.html" || echo "❌ _site/Cobertura/index.html"
-        test -f "_site/docs/Bank.Domain.html" && echo "✅ _site/docs/Bank.Domain.html" || echo "❌ _site/docs/Bank.Domain.html"
-        test -f "_site/clases.html" && echo "✅ _site/clases.html" || echo "❌ _site/clases.html"
-        test -f "_site/index.html" && echo "✅ _site/index.html" || echo "❌ _site/index.html"
-        echo ""
-        echo "📤 === 6. SIMULAR PUBLICACIÓN ==="
-        echo "Archivos que se publicarían en GitHub Pages:"
-        if [ -d "_site" ]; then
-          find _site -type f -name "*.html" | wc -l | xargs echo "Total archivos HTML:"
-          find _site -type f | head -30
-        fi
-        echo ""
-        echo "🔗 === 7. VERIFICAR ENLACES EN INDEX ==="
+        
+        echo "  🧪 PROBLEMA 3 - Enlaces rotos:"
         if [ -f "_site/index.html" ]; then
-          echo "Enlaces encontrados en index.html:"
-          grep -o 'href="[^"]*"' _site/index.html || echo "No se encontraron enlaces"
+          echo "    🔍 Enlaces en index.html que pueden estar rotos:"
+          grep -o 'href="[^"]*"' _site/index.html | while read link; do
+            file_path=$(echo "$link" | sed 's/href="//;s/"//')
+            if [[ "$file_path" != http* ]] && [[ "$file_path" != "#"* ]]; then
+              if [ ! -f "_site/$file_path" ]; then
+                echo "    ❌ ENLACE ROTO: $link -> _site/$file_path no existe"
+              else
+                echo "    ✅ ENLACE OK: $link"
+              fi
+            fi
+          done
+        fi
+        echo ""
+        
+        echo "🎯 === RESUMEN EJECUTIVO ==="
+        echo "📊 Archivos necesarios vs encontrados:"
+        total_needed=4
+        found=0
+        [ -f "_site/index.html" ] && found=$((found+1))
+        [ -f "_site/Cobertura/index.html" ] && found=$((found+1))
+        [ -f "_site/docs/Bank.Domain.html" ] && found=$((found+1))
+        [ -f "_site/clases.html" ] && found=$((found+1))
+        echo "  📈 Progreso: $found/$total_needed archivos principales encontrados"
+        
+        if [ $found -eq $total_needed ]; then
+          echo "  🎉 ¡ÉXITO! Todos los archivos están listos para publicación"
+        else
+          echo "  ⚠️  FALTAN $(($total_needed - $found)) archivos críticos"
+          echo "  🔧 Revisar los problemas identificados arriba"
         fi
 
     - name: Publicar en GitHub Pages
