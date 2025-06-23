@@ -3,13 +3,16 @@ name: 2. Publish Documentation
 env:
   DOTNET_VERSION: '8.0'
   DOTNET_VERSION_TOOL: '6.0'
+
 on: push
+
 jobs:
   build-and-deploy-docs:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: Bank
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -29,7 +32,6 @@ jobs:
         dotnet tool update -g docfx
         dotnet tool update -g dll2mmd
 
-    
     - name: Restore & Build project
       run: |
         dotnet restore Bank.Domain/Bank.Domain.csproj
@@ -129,7 +131,7 @@ jobs:
         
         ## [Reporte de Mutaciones](Stryker/mutation-report.html)
 
-        ## [Documentacion de Clases, atributos y métodos](api/Bank.Domain.html)
+        ## [Documentacion de Clases, atributos y métodos](docs/Bank.Domain.html)
 
         ## [Diagrama de Clases](clases.md)
         EOF
