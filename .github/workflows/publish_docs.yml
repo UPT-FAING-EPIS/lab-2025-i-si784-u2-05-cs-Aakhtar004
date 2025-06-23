@@ -175,6 +175,68 @@ jobs:
         ls -la _site/docs/ || echo "❌ Carpeta _site/docs no encontrada"
         test -f _site/docs/Bank.Domain.html && echo "✅ Bank.Domain.html encontrado" || echo "❌ Bank.Domain.html NO encontrado"
 
+    - name: DIAGNÓSTICO COMPLETO - Verificar generación de archivos
+      run: |
+        echo "🔍 === DIAGNÓSTICO COMPLETO ==="
+        echo ""
+        echo "📁 === 1. ESTRUCTURA ACTUAL DEL PROYECTO ==="
+        ls -la
+        echo ""
+        echo "📊 === 2. VERIFICAR REPORTE DE COBERTURA LOCAL ==="
+        if [ -d "Cobertura" ]; then
+          echo "✅ Carpeta Cobertura existe"
+          ls -la Cobertura/
+          if [ -f "Cobertura/index.html" ]; then
+            echo "✅ index.html encontrado - Tamaño: $(du -h Cobertura/index.html)"
+            echo "📝 Primeras 10 líneas:"
+            head -10 Cobertura/index.html
+          else
+            echo "❌ index.html NO encontrado"
+          fi
+        else
+          echo "❌ Carpeta Cobertura NO existe"
+        fi
+        echo ""
+        echo "🏗️ === 3. VERIFICAR CONSTRUCCIÓN DocFX ==="
+        if [ -d "_site" ]; then
+          echo "✅ Carpeta _site existe"
+          echo "📁 Contenido de _site:"
+          find _site -type f | head -20
+          echo ""
+          echo "🔍 Buscar archivos HTML específicos:"
+          find _site -name "*.html" -exec basename {} \; | sort | uniq
+        else
+          echo "❌ Carpeta _site NO existe"
+        fi
+        echo ""
+        echo "📋 === 4. VERIFICAR ARCHIVOS YAML DE METADATA ==="
+        if [ -d "docs" ]; then
+          echo "✅ Carpeta docs existe"
+          find docs -name "*.yml" -o -name "*.yaml" | head -10
+        else
+          echo "❌ Carpeta docs NO existe"
+        fi
+        echo ""
+        echo "🎯 === 5. VERIFICAR ENLACES ESPECÍFICOS ==="
+        echo "Buscando archivos que deberían existir:"
+        test -f "_site/Cobertura/index.html" && echo "✅ _site/Cobertura/index.html" || echo "❌ _site/Cobertura/index.html"
+        test -f "_site/docs/Bank.Domain.html" && echo "✅ _site/docs/Bank.Domain.html" || echo "❌ _site/docs/Bank.Domain.html"
+        test -f "_site/clases.html" && echo "✅ _site/clases.html" || echo "❌ _site/clases.html"
+        test -f "_site/index.html" && echo "✅ _site/index.html" || echo "❌ _site/index.html"
+        echo ""
+        echo "📤 === 6. SIMULAR PUBLICACIÓN ==="
+        echo "Archivos que se publicarían en GitHub Pages:"
+        if [ -d "_site" ]; then
+          find _site -type f -name "*.html" | wc -l | xargs echo "Total archivos HTML:"
+          find _site -type f | head -30
+        fi
+        echo ""
+        echo "🔗 === 7. VERIFICAR ENLACES EN INDEX ==="
+        if [ -f "_site/index.html" ]; then
+          echo "Enlaces encontrados en index.html:"
+          grep -o 'href="[^"]*"' _site/index.html || echo "No se encontraron enlaces"
+        fi
+
     - name: Publicar en GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
