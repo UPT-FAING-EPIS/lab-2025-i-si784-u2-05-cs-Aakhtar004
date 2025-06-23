@@ -131,7 +131,7 @@ jobs:
         
         ## [Reporte de Mutaciones](Stryker/mutation-report.html)
 
-        ## [Documentacion de Clases, atributos y métodos](api/Bank.Domain.html)
+        ## [Documentacion de Clases, atributos y métodos](docs/Bank.Domain.html)
 
         ## [Diagrama de Clases](clases.md)
         EOF
@@ -145,10 +145,9 @@ jobs:
       run: |
         echo "=== Contenido de _site ==="
         find _site -name "*.html" | head -20
-        echo "=== Verificando api/Bank.Domain.html ==="
-        ls -la _site/api/ || echo "❌ Carpeta api no encontrada"
-        test -f _site/api/Bank.Domain.html && echo "✅ Bank.Domain.html encontrado" || echo "❌ Bank.Domain.html NO encontrado"
-
+        echo "=== Verificando docs/Bank.Domain.html ==="
+        ls -la _site/docs/ || echo "❌ Carpeta docs no encontrada"
+        test -f _site/docs/Bank.Domain.html && echo "✅ Bank.Domain.html encontrado" || echo "❌ Bank.Domain.html NO encontrado"
 
     - name: Publicar en GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
