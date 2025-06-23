@@ -68,7 +68,7 @@ jobs:
                 {
                   "src": ".",
                   "files": [
-                    "Bank.Domain/Bank.Domain.csproj"
+                    "**/*.csproj"
                   ]
                 }
               ],
@@ -84,7 +84,8 @@ jobs:
                 "exclude": [
                   "_site/**",
                   "Cobertura/index.html",
-                  "Stryker/mutation-report.html"
+                  "Stryker/mutation-report.html",
+                  "docs/Bank.Domain.html"
                 ]
               }
             ],
