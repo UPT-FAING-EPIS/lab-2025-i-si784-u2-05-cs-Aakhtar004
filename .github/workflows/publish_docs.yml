@@ -82,8 +82,7 @@ jobs:
                 "exclude": [
                   "_site/**",
                   "Cobertura/index.html",
-                  "Stryker/mutation-report.html",
-                  "docs/Bank.Domain.html"
+                  "Stryker/mutation-report.html"
                 ]
               }
             ],
