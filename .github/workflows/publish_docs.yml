@@ -138,10 +138,27 @@ jobs:
         ## [Diagrama de Clases](clases.md)
         EOF
     
+    - name: Verificar estructura del proyecto
+      run: |
+        echo "=== Estructura del proyecto Bank.Domain ==="
+        find Bank.Domain -name "*.cs" | head -10
+        echo ""
+        echo "=== Clases públicas encontradas ==="
+        find Bank.Domain -name "*.cs" -exec grep -l "public class\|public interface\|public enum" {} \; || echo "❌ No se encontraron clases públicas"
+        echo ""
+        echo "=== Contenido del proyecto .csproj ==="
+        cat Bank.Domain/Bank.Domain.csproj
+
     - name: Generar documentación
       run: |
-        docfx metadata docfx.json
-        docfx build
+        echo "=== Ejecutando docfx metadata ==="
+        docfx metadata docfx.json --verbose
+        echo ""
+        echo "=== Verificando archivos generados después de metadata ==="
+        ls -la docs/ || echo "❌ Carpeta docs vacía"
+        echo ""
+        echo "=== Ejecutando docfx build ==="
+        docfx build docfx.json --verbose
     
     - name: Verificar archivos generados DETALLADO
       run: |
