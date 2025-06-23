@@ -131,7 +131,7 @@ jobs:
         
         ## [Reporte de Mutaciones](Stryker/mutation-report.html)
 
-        ## [Documentacion de Clases, atributos y métodos](docs/Bank.Domain.html)
+        ## [Documentacion de Clases, atributos y métodos](docs/Bank.Domain.Tests.html)
 
         ## [Diagrama de Clases](clases.md)
         EOF
