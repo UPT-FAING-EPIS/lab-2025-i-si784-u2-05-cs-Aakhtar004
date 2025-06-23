@@ -36,8 +36,6 @@ jobs:
       run: |
         dotnet restore Bank.Domain/Bank.Domain.csproj
         dotnet build Bank.Domain/Bank.Domain.csproj --configuration Release
-        dotnet restore Bank.Domain.Tests/Bank.Domain.Tests.csproj
-        dotnet build Bank.Domain.Tests/Bank.Domain.Tests.csproj --configuration Release
 
     - name: Generar diagrama de clases con dll2mmd
       run: |
