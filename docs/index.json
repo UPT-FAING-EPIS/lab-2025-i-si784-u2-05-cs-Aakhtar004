@@ -2,12 +2,22 @@
   "Cobertura/SummaryGithub.html": {
     "href": "Cobertura/SummaryGithub.html",
     "title": "Summary | Bank App",
-    "summary": "Summary Summary Generated on: 06/23/2025 - 05:29:06 Coverage date: 06/23/2025 - 05:29:04 Parser: Cobertura Assemblies: 1 Classes: 1 Files: 1 Line coverage: 95.2% (20 of 21) Covered lines: 20 Uncovered lines: 1 Coverable lines: 21 Total lines: 81 Branch coverage: 100% (6 of 6) Covered branches: 6 Total branches: 6 Method coverage: Feature is only available for sponsors Coverage Bank.Domain - 95.2% Name Line Branch Bank.Domain 95.2% 100% BankAccount 95.2% 100%"
+    "summary": "Summary Summary Generated on: 06/23/2025 - 05:34:58 Coverage date: 06/23/2025 - 05:34:56 Parser: Cobertura Assemblies: 1 Classes: 1 Files: 1 Line coverage: 95.2% (20 of 21) Covered lines: 20 Uncovered lines: 1 Coverable lines: 21 Total lines: 81 Branch coverage: 100% (6 of 6) Covered branches: 6 Total branches: 6 Method coverage: Feature is only available for sponsors Coverage Bank.Domain - 95.2% Name Line Branch Bank.Domain 95.2% 100% BankAccount 95.2% 100%"
   },
   "clases.html": {
     "href": "clases.html",
     "title": "| Bank App",
     "summary": "classDiagram class BankAccount BankAccount : +String CustomerName BankAccount : +Double Balance BankAccount : +Debit() Void BankAccount : +Credit() Void"
+  },
+  "docs/Bank.Domain.Tests.BankAccountTests.html": {
+    "href": "docs/Bank.Domain.Tests.BankAccountTests.html",
+    "title": "Class BankAccountTests | Bank App",
+    "summary": "Class BankAccountTests Namespace Bank.Domain.Tests Assembly Bank.Domain.Tests.dll public class BankAccountTests Inheritance object BankAccountTests Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Credit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange() [Fact] public void Credit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange() Credit_WithValidAmount_UpdatesBalance(double, double, double) [Theory] [InlineData(new object[] { 11.99, 5, 16.99 })] [InlineData(new object[] { 0, 100, 100 })] public void Credit_WithValidAmount_UpdatesBalance(double beginningBalance, double creditAmount, double expected) Parameters beginningBalance double creditAmount double expected double CustomerName_WhenCalled_ReturnCustomerName() [Fact] public void CustomerName_WhenCalled_ReturnCustomerName() Debit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange() [Fact] public void Debit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange() Debit_WhenAmountIsMoreThanBalance_ShouldThrowArgumentOutOfRange() [Fact] public void Debit_WhenAmountIsMoreThanBalance_ShouldThrowArgumentOutOfRange() MultiDebit_WithValidAmount_UpdatesBalance(double, double, double) [Theory] [InlineData(new object[] { 11.99, 4.55, 7.44 })] [InlineData(new object[] { 12.3, 5.2, 7.1 })] public void MultiDebit_WithValidAmount_UpdatesBalance(double beginningBalance, double debitAmount, double expected) Parameters beginningBalance double debitAmount double expected double"
+  },
+  "docs/Bank.Domain.Tests.html": {
+    "href": "docs/Bank.Domain.Tests.html",
+    "title": "Namespace Bank.Domain.Tests | Bank App",
+    "summary": "Namespace Bank.Domain.Tests Classes BankAccountTests"
   },
   "index.html": {
     "href": "index.html",
