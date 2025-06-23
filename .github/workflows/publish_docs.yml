@@ -36,7 +36,9 @@ jobs:
       run: |
         dotnet restore Bank.Domain/Bank.Domain.csproj
         dotnet build Bank.Domain/Bank.Domain.csproj --configuration Release
-    
+        dotnet restore Bank.Domain.Tests/Bank.Domain.Tests.csproj
+        dotnet build Bank.Domain.Tests/Bank.Domain.Tests.csproj --configuration Release
+
     - name: Generar diagrama de clases con dll2mmd
       run: |
         dll2mmd -f Bank.Domain/bin/Release/net8.0/Bank.Domain.dll -o clases.md
@@ -66,7 +68,7 @@ jobs:
                 {
                   "src": ".",
                   "files": [
-                    "**/*.csproj"
+                    "Bank.Domain/Bank.Domain.csproj"
                   ]
                 }
               ],
@@ -141,12 +143,19 @@ jobs:
         docfx metadata docfx.json
         docfx build
     
-    - name: Verificar archivos generados
+    - name: Verificar archivos generados DETALLADO
       run: |
-        echo "=== Contenido de _site ==="
-        find _site -name "*.html" | head -20
+        echo "=== Contenido completo de _site ==="
+        find _site -type f -name "*.html" | sort
+        echo ""
+        echo "=== Contenido de docs/ ==="
+        ls -la docs/ || echo "❌ Carpeta docs no existe después de metadata"
+        echo ""
+        echo "=== Archivos YML generados ==="
+        find docs/ -name "*.yml" 2>/dev/null || echo "❌ No se encontraron archivos YML"
+        echo ""
         echo "=== Verificando docs/Bank.Domain.html ==="
-        ls -la _site/docs/ || echo "❌ Carpeta docs no encontrada"
+        ls -la _site/docs/ || echo "❌ Carpeta _site/docs no encontrada"
         test -f _site/docs/Bank.Domain.html && echo "✅ Bank.Domain.html encontrado" || echo "❌ Bank.Domain.html NO encontrado"
 
     - name: Publicar en GitHub Pages
